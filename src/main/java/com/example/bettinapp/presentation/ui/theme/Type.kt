@@ -1,4 +1,4 @@
-package com.example.bettinapp.ui.theme
+package com.example.bettinapp.presentation.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

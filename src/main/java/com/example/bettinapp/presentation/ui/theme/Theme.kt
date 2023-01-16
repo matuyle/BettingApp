@@ -1,4 +1,4 @@
-package com.example.bettinapp.ui.theme
+package com.example.bettinapp.presentation.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
