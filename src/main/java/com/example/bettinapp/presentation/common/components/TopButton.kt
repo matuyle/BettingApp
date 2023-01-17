@@ -11,8 +11,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun ButtonComposable(
-    text: String
+fun TopButton(
+    text: String,
+    onButtonPressed: () -> Boolean = { false }
 ) {
     Column(
         modifier = Modifier
@@ -25,13 +26,12 @@ fun ButtonComposable(
         ) {
             TextButton(
                 onClick = {
-
+                    onButtonPressed.invoke()
                 }) {
                 Text(
                     text = text
                 )
             }
-
         }
     }
 }
@@ -40,6 +40,6 @@ fun ButtonComposable(
 @Composable
 fun TestingComposablePreview() {
     Box(modifier = Modifier.fillMaxSize()) {
-        ButtonComposable("Get results >>")
+        TopButton("Get results >>")
     }
 }

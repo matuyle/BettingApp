@@ -26,51 +26,84 @@ fun MatchListItem(
             .fillMaxWidth()
             .clickable { onItemClick(match) },
         backgroundColor = MaterialTheme.colors.primary,
-        elevation = 5.dp
+        elevation = 5.dp,
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
-            Text(
-                modifier = Modifier.weight(5f),
-                text = match.team1,
-                style = MaterialTheme.typography.body1,
-                overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.End
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "${match.team_points1 ?: "_"}",
-                style = MaterialTheme.typography.body1,
-                overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.End
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                modifier = Modifier.width(8.dp),
-                text = "-",
-                style = MaterialTheme.typography.body1,
-                overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "${match.team_points2 ?: "_"}",
-                style = MaterialTheme.typography.body1,
-                overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.End
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                modifier = Modifier.weight(5f),
-                text = match.team2,
-                style = MaterialTheme.typography.body1,
-                overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.Start
-            )
+                Text(
+                    modifier = Modifier.weight(5f),
+                    text = match.team1,
+                    style = MaterialTheme.typography.body1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.End
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "${match.team1_prediction ?: "_"}",
+                    style = MaterialTheme.typography.body1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.End
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    modifier = Modifier.width(8.dp),
+                    text = "-",
+                    style = MaterialTheme.typography.body1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "${match.team2_prediction ?: "_"}",
+                    style = MaterialTheme.typography.body1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.End
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    modifier = Modifier.weight(5f),
+                    text = match.team2,
+                    style = MaterialTheme.typography.body1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Start
+                )
+            }
+            if (match.team1_points != null && match.team2_points != null) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        modifier = Modifier.weight(5f),
+                        text = match.team1_points.toString(),
+                        style = MaterialTheme.typography.body2,
+                        textAlign = TextAlign.End
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        modifier = Modifier.width(8.dp),
+                        text = "-",
+                        style = MaterialTheme.typography.body2,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        modifier = Modifier.weight(5f),
+                        text = match.team2_points.toString(),
+                        style = MaterialTheme.typography.body2,
+                        textAlign = TextAlign.Start
+                    )
+                }
+            }
         }
     }
 }
@@ -83,8 +116,11 @@ fun MatchListItemPreview() {
             match = Match(
                 team1 = "Team1",
                 team2 = "Team2",
-                team_points1 = 2,
-                team_points2 = 3
+                team1_points = 2,
+                team2_points = 4,
+                team1_prediction = 2,
+                team2_prediction = 3,
+                timestamp = 123
             ), onItemClick = {})
     }
 }

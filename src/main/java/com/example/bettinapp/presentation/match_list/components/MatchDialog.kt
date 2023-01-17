@@ -41,8 +41,8 @@ fun MatchDialog(
                     dialogOpen = false
                     // Todo Need to move this logic to somewhere else
                     match.apply{
-                        if (team_points1 == null) team_points1 = 0
-                        if (team_points2 == null) team_points2 = 0
+                        if (team1_prediction == null) team1_prediction = 0
+                        if (team2_prediction == null) team2_prediction = 0
                     }
                     onConfirm.invoke(match)
                 }) {
@@ -60,16 +60,16 @@ fun MatchDialog(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     ScoreItem(
-                        score = match.team_points1 ?: 0,
+                        score = match.team1_prediction ?: 0,
                         onScoreChanged = {
-                            match.team_points1 = it
+                            match.team1_prediction = it
                         }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     ScoreItem(
-                        score = match.team_points2 ?: 0,
+                        score = match.team2_prediction ?: 0,
                         onScoreChanged = {
-                            match.team_points2 = it
+                            match.team2_prediction = it
                         }
                     )
                     Spacer(modifier = Modifier.height(8.dp))

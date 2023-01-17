@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.bettinapp.presentation.match_list.components.MatchListScreen
+import com.example.bettinapp.presentation.match_results.components.MatchResultsScreen
 import com.example.bettinapp.presentation.ui.theme.BettinAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,6 +30,11 @@ class MainActivity : ComponentActivity() {
                             route = Screen.MatchListScreen.route
                         ) {
                             MatchListScreen(navController)
+                        }
+                        composable(
+                            route = Screen.MatchResultScreen.route
+                        ) {
+                            MatchResultsScreen(navController)
                         }
                     }
                 }
