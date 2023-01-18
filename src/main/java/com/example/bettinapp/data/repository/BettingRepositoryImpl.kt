@@ -1,10 +1,13 @@
 package com.example.bettinapp.data.repository
 
+import android.util.Log
 import com.example.bettinapp.core.util.Resource
 import com.example.bettinapp.data.local.MatchDao
+import com.example.bettinapp.data.local.ResultDao
 import com.example.bettinapp.data.remote.BettingApi
-import com.example.bettinapp.data.remote.dto.MatchesTdo
 import com.example.bettinapp.domain.model.Match
+import com.example.bettinapp.domain.model.MatchAndResult
+import com.example.bettinapp.domain.model.Result
 import com.example.bettinapp.domain.repository.BettingRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -14,47 +17,92 @@ import javax.inject.Inject
 
 class BettingRepositoryImpl @Inject constructor(
     private val api: BettingApi,
-    private val dao: MatchDao
+    private val matchDao: MatchDao,
+    private val resultDao: ResultDao
 ) : BettingRepository {
 
-    override fun getMatches(): Flow<Resource<List<Match>>> = flow {
+    override suspend fun getMatches(): Flow<Resource<List<Match>>> = flow {
         emit(Resource.Loading())
 
-        val matches = dao.getMatches().map { it.toMatch() }
-        if (matches.isNotEmpty()) {
-            emit(Resource.Success(matches))
-            return@flow
-        }
+        matchDao.getMatches().collect() {
+            val matches = it.map { obj -> obj.toMatch() }
+            if (matches.isNotEmpty()) {
+                emit(Resource.Success(matches))
+                Log.d("LogB", matches.size.toString())
+                return@collect
+            }
 
-        try {
-            val remoteMatches = api.getMatches().matches
-            dao.clearAll()
-            dao.insertMatches(remoteMatches.map { it.toMatchEntity() })
-        } catch (e: HttpException) {
-            emit(
-                Resource.Error(
-                    message = "Oops, something went wrong!",
-                    data = matches
+            try {
+                val remoteMatches = api.getMatches().matches
+                matchDao.insertMatches(remoteMatches.map { matchDto -> matchDto.toMatchEntity() })
+                if (remoteMatches.isEmpty())
+                    emit(Resource.Success(emptyList()))
+            } catch (e: HttpException) {
+                emit(
+                    Resource.Error(
+                        message = "Oops, something went wrong!",
+                        data = matches
+                    )
                 )
-            )
-        } catch (e: IOException) {
-            emit(
-                Resource.Error(
-                    message = "Couldn't reach server, check your internet connection.",
-                    data = matches
+            } catch (e: IOException) {
+                emit(
+                    Resource.Error(
+                        message = "Couldn't reach server, check your internet connection.",
+                        data = matches
+                    )
                 )
-            )
+            }
         }
-        val newMatches = dao.getMatches().map { it.toMatch() }
-        emit(Resource.Success(newMatches))
+    }
+
+    override suspend fun getMatchById(id: Int): Match? {
+        return matchDao.getMatchById(id)
     }
 
     override suspend fun insertMatch(match: Match) {
-        TODO("Not yet implemented")
+        matchDao.insertMatch(match.toMatchEntity())
     }
 
-    override suspend fun getMatchResults(): MatchesTdo {
-        return api.getMatchResults()
+    override suspend fun getMatchWithPrediction(): Match? {
+        return matchDao.getMatchWithPrediction()
+    }
+
+    override suspend fun getResults(): Flow<Resource<List<Result>>> = flow {
+        resultDao.getResults().collect() {
+            val results = it.map { obj -> obj.toResult() }
+            if (results.isNotEmpty()) {
+                emit(Resource.Success(results))
+                return@collect
+            }
+
+            try {
+                val remoteMatches = api.getMatchResults().matches
+                resultDao.insertResults(remoteMatches.map { matchDto -> matchDto.toResultEntity() })
+            } catch (e: HttpException) {
+                emit(
+                    Resource.Error(
+                        message = "Oops, something went wrong!",
+                        data = results
+                    )
+                )
+            } catch (e: IOException) {
+                emit(
+                    Resource.Error(
+                        message = "Couldn't reach server, check your internet connection.",
+                        data = results
+                    )
+                )
+            }
+        }
+    }
+
+    override fun getMatchAndResult(): List<MatchAndResult> {
+        return matchDao.getMatchesAndResults()
+    }
+
+    override suspend fun deleteTables() {
+        matchDao.clearMatches()
+        resultDao.clearResults()
     }
 
 }

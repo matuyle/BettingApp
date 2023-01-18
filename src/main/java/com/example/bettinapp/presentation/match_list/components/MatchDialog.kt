@@ -3,12 +3,12 @@ package com.example.bettinapp.presentation.match_list.components
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.example.bettinapp.domain.model.Match
@@ -26,6 +26,7 @@ fun MatchDialog(
         mutableStateOf(showDialog)
     }
 
+
     if (dialogOpen) {
         AlertDialog(
             onDismissRequest = {
@@ -40,7 +41,7 @@ fun MatchDialog(
                     // perform the confirm action
                     dialogOpen = false
                     // Todo Need to move this logic to somewhere else
-                    match.apply{
+                    match.apply {
                         if (team1_prediction == null) team1_prediction = 0
                         if (team2_prediction == null) team2_prediction = 0
                     }
@@ -82,7 +83,7 @@ fun MatchDialog(
                 .fillMaxWidth()
                 .padding(32.dp),
             shape = RoundedCornerShape(5.dp),
-            backgroundColor = Color.White,
+            backgroundColor = MaterialTheme.colors.surface,
             properties = DialogProperties(
                 dismissOnBackPress = true,
                 dismissOnClickOutside = true

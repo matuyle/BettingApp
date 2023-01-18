@@ -7,9 +7,7 @@ import com.example.bettinapp.data.local.MatchDataBase
 import com.example.bettinapp.data.remote.BettingApi
 import com.example.bettinapp.data.repository.BettingRepositoryImpl
 import com.example.bettinapp.domain.repository.BettingRepository
-import com.example.bettinapp.domain.use_case.MatchesUseCases
-import com.example.bettinapp.domain.use_case.GetMatchResultsUseCase
-import com.example.bettinapp.domain.use_case.GetMatchesUseCase
+import com.example.bettinapp.domain.use_case.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,7 +25,12 @@ object AppModule {
     fun provideBettingUseCases(repository: BettingRepository): MatchesUseCases {
         return MatchesUseCases(
             getMatchesUseCase = GetMatchesUseCase(repository),
-            getMatchResultsUseCase = GetMatchResultsUseCase(repository)
+            getMatchUseCase = GetMatchUseCase(repository),
+            addMatchUseCase = AddMatchUseCase(repository),
+            getMatchWithPrediction = GetMatchWithPrediction(repository),
+            getResultsUseCase = GetResultsUseCase(repository),
+            getMatchesAndResults = GetMatchesAndResults(repository),
+            deleteTablesUseCase = DeleteTablesUseCase(repository)
         )
     }
 
@@ -37,7 +40,7 @@ object AppModule {
         db: MatchDataBase,
         api: BettingApi
     ): BettingRepository {
-        return BettingRepositoryImpl(api, db.dao)
+        return BettingRepositoryImpl(api, db.matchDao, db.resultDao)
     }
 
     @Provides

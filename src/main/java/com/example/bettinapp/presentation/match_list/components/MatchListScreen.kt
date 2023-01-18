@@ -1,5 +1,6 @@
 package com.example.bettinapp.presentation.match_list.components
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
@@ -8,23 +9,36 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.bettinapp.presentation.Screen
-import com.example.bettinapp.presentation.common.components.TopButton
 import com.example.bettinapp.presentation.common.components.MatchesList
+import com.example.bettinapp.presentation.common.components.TopButton
 import com.example.bettinapp.presentation.match_list.MatchListEvent
 import com.example.bettinapp.presentation.match_list.MatchListViewModel
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun MatchListScreen(
     navController: NavController,
     viewModel: MatchListViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     LaunchedEffect(true) {
         viewModel.getMatches()
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is MatchListViewModel.UiEvent.MoveToResults -> {
+                    navController.navigate(Screen.MatchResultScreen.route)
+                }
+                is MatchListViewModel.UiEvent.ShowToast -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 
     val state = viewModel.state.value
@@ -54,14 +68,14 @@ fun MatchListScreen(
             TopButton(
                 "Get results >>",
             ) {
-                navController.navigate(Screen.MatchResultScreen.route)
+                viewModel.onEvent(MatchListEvent.OnTopButtonPressed)
                 true
             } // Todo give callback
             Spacer(modifier = Modifier.height(8.dp))
             MatchesList(
                 matches = state.matches,
-                onItemClick = { match ->
-                    viewModel.onEvent(MatchListEvent.OpenDialog(match))
+                onItemClick = { id ->
+                    viewModel.onEvent(MatchListEvent.OpenDialog(id))
                 })
         }
         if (state.error.isNotBlank()) {

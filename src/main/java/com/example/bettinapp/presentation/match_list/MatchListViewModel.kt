@@ -9,6 +9,8 @@ import com.example.bettinapp.domain.use_case.MatchesUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -22,23 +24,41 @@ class MatchListViewModel @Inject constructor(
     private val _state = mutableStateOf(MatchListState())
     val state: State<MatchListState> = _state
 
-    private var getListJob: Job? = null
+    private val _eventFlow = MutableSharedFlow<UiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
+
+    private var getNotesJob: Job? = null
 
     fun getMatches() {
-        getListJob?.cancel()
-        getListJob = viewModelScope.launch(Dispatchers.IO) {
+        getNotesJob?.cancel()
+        getNotesJob = viewModelScope.launch(Dispatchers.IO) {
             getMatchesUseCases.getMatchesUseCase().onEach { result ->
                 when (result) {
                     is Resource.Success -> {
-                        _state.value = MatchListState(matches = result.data ?: emptyList())
+                        if (result.data?.isNotEmpty() == true) {
+                            _state.value = state.value.copy(
+                                matches = result.data,
+                                isLoading = false
+                            )
+                        } else {
+                            _state.value = MatchListState(
+                                matches = emptyList(),
+                                isLoading = false,
+                                error = result.message ?: "Can't find matches"
+                            )
+                        }
                     }
                     is Resource.Error -> {
                         _state.value = MatchListState(
+                            matches = emptyList(),
+                            isLoading = false,
                             error = result.message ?: "An unexpected error occured"
                         )
                     }
                     is Resource.Loading -> {
-                        _state.value = MatchListState(isLoading = true)
+                        _state.value = state.value.copy(
+                            isLoading = true
+                        )
                     }
                 }
             }.launchIn(this)
@@ -48,10 +68,15 @@ class MatchListViewModel @Inject constructor(
     fun onEvent(event: MatchListEvent) {
         when (event) {
             is MatchListEvent.OpenDialog -> {
-                _state.value = state.value.copy(
-                    recentMatch = event.match,
-                    isDialogOpen = true
-                )
+                viewModelScope.launch() {
+                    getMatchesUseCases.getMatchUseCase(event.matchId).also { match ->
+                        _state.value = state.value.copy(
+                            recentMatch = match,
+                            isDialogOpen = true
+                        )
+                    }
+                }
+
             }
             is MatchListEvent.DismissDialog -> {
                 _state.value = state.value.copy(
@@ -63,11 +88,26 @@ class MatchListViewModel @Inject constructor(
                     recentMatch = event.match,
                     isDialogOpen = false
                 )
+                viewModelScope.launch {
+                    getMatchesUseCases.addMatchUseCase(event.match)
+                }
             }
             is MatchListEvent.OnTopButtonPressed -> {
-
+                viewModelScope.launch {
+                    getMatchesUseCases.getMatchWithPrediction().also { match ->
+                        match?.let {
+                            _eventFlow.emit(UiEvent.MoveToResults)
+                            return@launch
+                        }
+                        _eventFlow.emit(UiEvent.ShowToast("At least one prediction must be made"))
+                    }
+                }
             }
         }
     }
 
+    sealed class UiEvent {
+        object MoveToResults : UiEvent()
+        data class ShowToast(val message: String) : UiEvent()
+    }
 }

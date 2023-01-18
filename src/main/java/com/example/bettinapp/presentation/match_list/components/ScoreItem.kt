@@ -29,7 +29,7 @@ fun ScoreItem(
     ) {
         IconButton(
             onClick = {
-                if (score > 0) currentScore--
+                if (currentScore > 0) currentScore--
                 onScoreChanged.invoke(currentScore)
             },
         ) {
@@ -50,7 +50,10 @@ fun ScoreItem(
                 onScoreChanged.invoke(currentScore)
             },
         ) {
-            Icon(painter = painterResource(id = R.drawable.ic_add), contentDescription = "Add")
+            Icon(
+                painter = painterResource(id = R.drawable.ic_add),
+                contentDescription = "Add",
+            )
         }
     }
 }

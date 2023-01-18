@@ -1,7 +1,7 @@
 package com.example.bettinapp.data.remote.dto
 
 import com.example.bettinapp.data.local.entity.MatchEntity
-import com.example.bettinapp.domain.model.Match
+import com.example.bettinapp.data.local.entity.ResultEntity
 import com.google.gson.annotations.SerializedName
 
 data class MatchDto(
@@ -18,19 +18,17 @@ data class MatchDto(
         return MatchEntity(
             team1 = team1,
             team2 = team2,
+            timestamp = System.currentTimeMillis()
+        )
+    }
+
+    fun toResultEntity(): ResultEntity {
+        return ResultEntity(
+            team1 = team1,
+            team2 = team2,
             team1_points = team1_points,
             team2_points = team2_points,
             timestamp = System.currentTimeMillis()
         )
     }
-}
-
-fun MatchDto.toMatch(): Match {
-    return Match(
-        team1 = team1,
-        team2 = team2,
-        team1_points = team1_points,
-        team2_points = team2_points,
-        timestamp = System.currentTimeMillis()
-    )
 }

@@ -5,15 +5,18 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.bettinapp.presentation.common.components.TopButton
 import com.example.bettinapp.presentation.common.components.MatchesList
+import com.example.bettinapp.presentation.common.components.TopButton
+import com.example.bettinapp.presentation.match_results.MatchResultsEvent
 import com.example.bettinapp.presentation.match_results.MatchResultsViewModel
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun MatchResultsScreen(
@@ -22,6 +25,16 @@ fun MatchResultsScreen(
 ) {
     val state = viewModel.state.value
 
+    LaunchedEffect(true) {
+        viewModel.getResults()
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is MatchResultsViewModel.UiEvent.SaveNote -> {
+                    navController.navigateUp()
+                }
+            }
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -31,11 +44,12 @@ fun MatchResultsScreen(
             TopButton(
                 "Restart"
             ) {
-                navController.navigateUp()
-            } // Todo give callback
+                viewModel.onEvent(MatchResultsEvent.OnTopButtonPressed)
+                true
+            }
             Spacer(modifier = Modifier.height(8.dp))
             MatchesList(
-                matches = state.matches
+                matches = state.matches.map { it }
             )
         }
         if (state.error.isNotBlank()) {

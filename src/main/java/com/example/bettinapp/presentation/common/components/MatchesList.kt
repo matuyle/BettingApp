@@ -12,7 +12,7 @@ import com.example.bettinapp.domain.model.Match
 @Composable
 fun MatchesList(
     matches: List<Match>,
-    onItemClick: (match: Match) -> Unit? = {}
+    onItemClick: (matchId: Int) -> Unit? = {}
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -22,7 +22,7 @@ fun MatchesList(
             MatchListItem(
                 match = match,
                 onItemClick = {
-                    onItemClick.invoke(match)
+                    match.id?.let { id -> onItemClick.invoke(id) }
                 }
             )
         }
