@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun MatchListScreen(
     navController: NavController,
-    viewModel: MatchListViewModel = hiltViewModel()
+    viewModel: MatchListViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     LaunchedEffect(true) {
@@ -32,6 +32,7 @@ fun MatchListScreen(
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is MatchListViewModel.UiEvent.MoveToResults -> {
+                    viewModel.onEvent(MatchListEvent.OnNav)
                     navController.navigate(Screen.MatchResultScreen.route)
                 }
                 is MatchListViewModel.UiEvent.ShowToast -> {
@@ -70,7 +71,7 @@ fun MatchListScreen(
             ) {
                 viewModel.onEvent(MatchListEvent.OnTopButtonPressed)
                 true
-            } // Todo give callback
+            }
             Spacer(modifier = Modifier.height(8.dp))
             MatchesList(
                 matches = state.matches,

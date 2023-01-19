@@ -7,4 +7,5 @@ sealed class MatchListEvent {
     data class ConfirmDialog(val match: Match) : MatchListEvent()
     object DismissDialog : MatchListEvent()
     object OnTopButtonPressed : MatchListEvent()
+    object OnNav: MatchListEvent()
 }

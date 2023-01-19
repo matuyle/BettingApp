@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ResultDao {
 
-    @Query("SELECT * FROM result_table")
-    fun getResults(): Flow<List<ResultEntity>>
+    @Query("SELECT * FROM result_table WHERE timestamp > :time")
+    fun getResults(time: Long): Flow<List<ResultEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertResults(matches: List<ResultEntity>)

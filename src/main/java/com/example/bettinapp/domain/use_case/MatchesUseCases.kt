@@ -7,5 +7,5 @@ data class MatchesUseCases(
     val getMatchWithPrediction: GetMatchWithPrediction,
     val getResultsUseCase: GetResultsUseCase,
     val getMatchesAndResults: GetMatchesAndResults,
-    val deleteTablesUseCase: DeleteTablesUseCase
+    val deleteTablesUseCase: DeleteTablesUseCase,
 )

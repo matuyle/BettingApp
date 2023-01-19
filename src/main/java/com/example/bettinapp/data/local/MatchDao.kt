@@ -1,19 +1,20 @@
 package com.example.bettinapp.data.local
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.bettinapp.data.local.entity.MatchEntity
 import com.example.bettinapp.domain.model.Match
 import com.example.bettinapp.domain.model.MatchAndResult
 import kotlinx.coroutines.flow.Flow
 
+
 @Dao
 interface MatchDao {
 
-    @Query("SELECT * FROM matches_table")
-    fun getMatches(): Flow<List<MatchEntity>>
+//    @Query("SELECT * FROM matches_table ORDER BY timestamp DESC LIMIT 1")
+//    fun loadSingle(id: String): MatchEntity
+
+    @Query("SELECT * FROM matches_table WHERE timestamp > :time AND timestamp = (SELECT MAX(timeStamp) FROM matches_table) ")
+    fun getMatches(time: Long): Flow<List<MatchEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMatches(matches: List<MatchEntity>)
@@ -44,8 +45,10 @@ interface MatchDao {
             "result_table.team1 = matches_table.team1 AND \n" +
             "result_table.team2 = matches_table.team2 AND \n" +
             "matches_table.team1_prediction NOT NULL AND \n" +
-            "matches_table.team2_prediction NOT NULL"
+            "matches_table.team2_prediction NOT NULL AND \n" +
+                "result_table.timestamp > :time"
+
     )
-    fun getMatchesAndResults(): List<MatchAndResult>
+    fun getMatchesAndResults(time: Long): List<MatchAndResult>
 
 }

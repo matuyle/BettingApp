@@ -1,4 +1,4 @@
-package com.example.bettinapp.core
+package com.example.bettinapp.data.remote
 
 object Constants {
 

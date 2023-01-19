@@ -4,10 +4,14 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bettinapp.core.util.Constants
 import com.example.bettinapp.core.util.Resource
+import com.example.bettinapp.domain.repository.DataStoreRepository
 import com.example.bettinapp.domain.use_case.MatchesUseCases
+import com.example.bettinapp.presentation.common.Constants.MATCH_LIST_SCREEN
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -17,7 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MatchResultsViewModel @Inject constructor(
-    private val getMatchesUseCases: MatchesUseCases
+    private val getMatchesUseCases: MatchesUseCases,
+    private val datastoreRepository: DataStoreRepository
 ) : ViewModel() {
 
     private val _state = mutableStateOf(MatchResultsState())
@@ -41,7 +46,7 @@ class MatchResultsViewModel @Inject constructor(
                                 _state.value = state.value.copy(
                                     matches = emptyList(),
                                     isLoading = false,
-                                    error = result.message ?: "Can't find matches"
+                                    error = result.message ?: "Can't find results"
                                 )
                             }
                         }
@@ -63,15 +68,28 @@ class MatchResultsViewModel @Inject constructor(
         when (event) {
             is MatchResultsEvent.OnTopButtonPressed -> {
                 viewModelScope.launch {
-                    getMatchesUseCases.deleteTablesUseCase()
-                    _eventFlow.emit(UiEvent.SaveNote)
+                    _state.value = MatchResultsState(isLoading = true)
+                    getMatchesUseCases.deleteTablesUseCase().also {
+                        delay(300)
+                        _eventFlow.emit(UiEvent.OnReset)
+                    }
                 }
+            }
+            is MatchResultsEvent.OnNav -> {
+                viewModelScope.launch { storeLatestScreen(MATCH_LIST_SCREEN) }
             }
         }
     }
 
+    private suspend fun storeLatestScreen(value: String) {
+        datastoreRepository.putString(
+            Constants.PREFERENCES_LATEST_SCREEN,
+            value
+        )
+    }
+
     sealed class UiEvent {
-        object SaveNote : UiEvent()
+        object OnReset : UiEvent()
     }
 
 }

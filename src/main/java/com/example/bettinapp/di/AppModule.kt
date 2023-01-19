@@ -2,7 +2,7 @@ package com.example.bettinapp.di
 
 import android.app.Application
 import androidx.room.Room
-import com.example.bettinapp.core.Constants
+import com.example.bettinapp.data.remote.Constants
 import com.example.bettinapp.data.local.MatchDataBase
 import com.example.bettinapp.data.remote.BettingApi
 import com.example.bettinapp.data.repository.BettingRepositoryImpl
@@ -30,7 +30,7 @@ object AppModule {
             getMatchWithPrediction = GetMatchWithPrediction(repository),
             getResultsUseCase = GetResultsUseCase(repository),
             getMatchesAndResults = GetMatchesAndResults(repository),
-            deleteTablesUseCase = DeleteTablesUseCase(repository)
+            deleteTablesUseCase = DeleteTablesUseCase(repository),
         )
     }
 
@@ -40,7 +40,11 @@ object AppModule {
         db: MatchDataBase,
         api: BettingApi
     ): BettingRepository {
-        return BettingRepositoryImpl(api, db.matchDao, db.resultDao)
+        return BettingRepositoryImpl(
+            api,
+            db.matchDao,
+            db.resultDao
+        )
     }
 
     @Provides

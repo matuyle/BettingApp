@@ -14,21 +14,21 @@ data class MatchDto(
     @SerializedName("team2_points")
     val team2_points: Int? = null,
 ) {
-    fun toMatchEntity(): MatchEntity {
+    fun toMatchEntity(timestamp: Long): MatchEntity {
         return MatchEntity(
             team1 = team1,
             team2 = team2,
-            timestamp = System.currentTimeMillis()
+            timestamp = timestamp
         )
     }
 
-    fun toResultEntity(): ResultEntity {
+    fun toResultEntity(timestamp: Long): ResultEntity {
         return ResultEntity(
             team1 = team1,
             team2 = team2,
             team1_points = team1_points,
             team2_points = team2_points,
-            timestamp = System.currentTimeMillis()
+            timestamp = timestamp
         )
     }
 }

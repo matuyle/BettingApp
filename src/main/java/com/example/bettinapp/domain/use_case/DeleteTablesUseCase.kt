@@ -5,7 +5,7 @@ import com.example.bettinapp.domain.repository.BettingRepository
 class DeleteTablesUseCase(
     private val repository: BettingRepository
 ) {
-    suspend operator fun invoke() {
+    suspend operator fun invoke()  {
        repository.deleteTables()
     }
 }

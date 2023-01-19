@@ -1,5 +1,6 @@
 package com.example.bettinapp.presentation.match_results.components
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
@@ -12,6 +13,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.bettinapp.presentation.Screen
 import com.example.bettinapp.presentation.common.components.MatchesList
 import com.example.bettinapp.presentation.common.components.TopButton
 import com.example.bettinapp.presentation.match_results.MatchResultsEvent
@@ -29,8 +31,12 @@ fun MatchResultsScreen(
         viewModel.getResults()
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
-                is MatchResultsViewModel.UiEvent.SaveNote -> {
-                    navController.navigateUp()
+                is MatchResultsViewModel.UiEvent.OnReset -> {
+                    viewModel.onEvent(MatchResultsEvent.OnNav)
+                    if (navController.currentBackStack.value.size > 2)
+                        navController.navigateUp() else navController.navigate(
+                        Screen.MatchListScreen.route
+                    )
                 }
             }
         }
@@ -67,4 +73,7 @@ fun MatchResultsScreen(
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
     }
+    BackHandler(onBack = {
+
+    })
 }

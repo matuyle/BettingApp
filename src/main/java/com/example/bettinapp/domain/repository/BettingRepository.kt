@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface BettingRepository {
 
-    suspend fun getMatches(): Flow<Resource<List<Match>>>
+    suspend fun getMatches(time: Long): Flow<Resource<List<Match>>>
 
     suspend fun getMatchById(id: Int): Match?
 
@@ -16,11 +16,10 @@ interface BettingRepository {
 
     suspend fun getMatchWithPrediction(): Match?
 
-    suspend fun getResults(): Flow<Resource<List<Result>>>
+    suspend fun getResults(time: Long): Flow<Resource<List<Result>>>
 
-    fun getMatchAndResult(): List<MatchAndResult>
+    fun getMatchAndResult(time: Long): List<MatchAndResult>
 
     suspend fun deleteTables()
-
 
 }

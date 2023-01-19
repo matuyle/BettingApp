@@ -4,11 +4,13 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bettinapp.core.util.Constants
 import com.example.bettinapp.core.util.Resource
+import com.example.bettinapp.domain.repository.DataStoreRepository
 import com.example.bettinapp.domain.use_case.MatchesUseCases
+import com.example.bettinapp.presentation.common.Constants.MATCH_RESULTS_SCREEN
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -18,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MatchListViewModel @Inject constructor(
-    private val getMatchesUseCases: MatchesUseCases
+    private val getMatchesUseCases: MatchesUseCases,
+    private val datastoreRepository: DataStoreRepository
 ) : ViewModel() {
 
     private val _state = mutableStateOf(MatchListState())
@@ -27,11 +30,8 @@ class MatchListViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    private var getNotesJob: Job? = null
-
     fun getMatches() {
-        getNotesJob?.cancel()
-        getNotesJob = viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch() {
             getMatchesUseCases.getMatchesUseCase().onEach { result ->
                 when (result) {
                     is Resource.Success -> {
@@ -61,7 +61,7 @@ class MatchListViewModel @Inject constructor(
                         )
                     }
                 }
-            }.launchIn(this)
+            }.launchIn(viewModelScope)
         }
     }
 
@@ -103,7 +103,14 @@ class MatchListViewModel @Inject constructor(
                     }
                 }
             }
+            is MatchListEvent.OnNav -> {
+                viewModelScope.launch(Dispatchers.IO) { storeLatestScreen(MATCH_RESULTS_SCREEN) }
+            }
         }
+    }
+
+    private suspend fun storeLatestScreen(value: String) {
+        datastoreRepository.putString(Constants.PREFERENCES_LATEST_SCREEN, value)
     }
 
     sealed class UiEvent {

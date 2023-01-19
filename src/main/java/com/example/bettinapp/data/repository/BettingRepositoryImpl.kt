@@ -21,10 +21,9 @@ class BettingRepositoryImpl @Inject constructor(
     private val resultDao: ResultDao
 ) : BettingRepository {
 
-    override suspend fun getMatches(): Flow<Resource<List<Match>>> = flow {
+    override suspend fun getMatches(time: Long): Flow<Resource<List<Match>>> = flow {
         emit(Resource.Loading())
-
-        matchDao.getMatches().collect() {
+        matchDao.getMatches(time).collect {
             val matches = it.map { obj -> obj.toMatch() }
             if (matches.isNotEmpty()) {
                 emit(Resource.Success(matches))
@@ -33,8 +32,10 @@ class BettingRepositoryImpl @Inject constructor(
             }
 
             try {
+                matchDao.clearMatches()
                 val remoteMatches = api.getMatches().matches
-                matchDao.insertMatches(remoteMatches.map { matchDto -> matchDto.toMatchEntity() })
+                val timestamp = System.currentTimeMillis()
+                matchDao.insertMatches(remoteMatches.map { matchDto -> matchDto.toMatchEntity(timestamp) })
                 if (remoteMatches.isEmpty())
                     emit(Resource.Success(emptyList()))
             } catch (e: HttpException) {
@@ -67,8 +68,9 @@ class BettingRepositoryImpl @Inject constructor(
         return matchDao.getMatchWithPrediction()
     }
 
-    override suspend fun getResults(): Flow<Resource<List<Result>>> = flow {
-        resultDao.getResults().collect() {
+    // TODO DRY same as top fun code
+    override suspend fun getResults(time: Long): Flow<Resource<List<Result>>> = flow {
+        resultDao.getResults(time).collect() {
             val results = it.map { obj -> obj.toResult() }
             if (results.isNotEmpty()) {
                 emit(Resource.Success(results))
@@ -77,7 +79,11 @@ class BettingRepositoryImpl @Inject constructor(
 
             try {
                 val remoteMatches = api.getMatchResults().matches
-                resultDao.insertResults(remoteMatches.map { matchDto -> matchDto.toResultEntity() })
+                resultDao.clearResults()
+                val timestamp = System.currentTimeMillis()
+                resultDao.insertResults(remoteMatches.map { matchDto -> matchDto.toResultEntity(timestamp) })
+                if (remoteMatches.isEmpty())
+                    emit(Resource.Success(emptyList()))
             } catch (e: HttpException) {
                 emit(
                     Resource.Error(
@@ -96,8 +102,8 @@ class BettingRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getMatchAndResult(): List<MatchAndResult> {
-        return matchDao.getMatchesAndResults()
+    override fun getMatchAndResult(time: Long): List<MatchAndResult> {
+        return matchDao.getMatchesAndResults(time)
     }
 
     override suspend fun deleteTables() {
