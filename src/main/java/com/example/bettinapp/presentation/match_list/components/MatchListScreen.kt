@@ -10,10 +10,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.bettinapp.R
 import com.example.bettinapp.presentation.Screen
 import com.example.bettinapp.presentation.common.components.MatchesList
 import com.example.bettinapp.presentation.common.components.TopButton
@@ -67,7 +69,7 @@ fun MatchListScreen(
         }
         Column(modifier = Modifier.matchParentSize()) {
             TopButton(
-                "Get results >>",
+                text = stringResource(R.string.button_text_get_results),
             ) {
                 viewModel.onEvent(MatchListEvent.OnTopButtonPressed)
                 true

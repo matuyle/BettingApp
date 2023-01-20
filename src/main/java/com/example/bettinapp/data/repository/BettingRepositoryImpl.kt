@@ -1,6 +1,5 @@
 package com.example.bettinapp.data.repository
 
-import android.util.Log
 import com.example.bettinapp.core.util.Resource
 import com.example.bettinapp.data.local.MatchDao
 import com.example.bettinapp.data.local.ResultDao
@@ -27,7 +26,6 @@ class BettingRepositoryImpl @Inject constructor(
             val matches = it.map { obj -> obj.toMatch() }
             if (matches.isNotEmpty()) {
                 emit(Resource.Success(matches))
-                Log.d("LogB", matches.size.toString())
                 return@collect
             }
 
@@ -35,7 +33,10 @@ class BettingRepositoryImpl @Inject constructor(
                 matchDao.clearMatches()
                 val remoteMatches = api.getMatches().matches
                 val timestamp = System.currentTimeMillis()
-                matchDao.insertMatches(remoteMatches.map { matchDto -> matchDto.toMatchEntity(timestamp) })
+                matchDao.insertMatches(remoteMatches.map { matchDto ->
+                    matchDto
+                        .toMatchEntity(timestamp)
+                })
                 if (remoteMatches.isEmpty())
                     emit(Resource.Success(emptyList()))
             } catch (e: HttpException) {
@@ -68,8 +69,8 @@ class BettingRepositoryImpl @Inject constructor(
         return matchDao.getMatchWithPrediction()
     }
 
-    // TODO DRY same as top fun code
     override suspend fun getResults(time: Long): Flow<Resource<List<Result>>> = flow {
+        emit(Resource.Loading())
         resultDao.getResults(time).collect() {
             val results = it.map { obj -> obj.toResult() }
             if (results.isNotEmpty()) {
@@ -78,10 +79,13 @@ class BettingRepositoryImpl @Inject constructor(
             }
 
             try {
-                val remoteMatches = api.getMatchResults().matches
                 resultDao.clearResults()
+                val remoteMatches = api.getMatchResults().matches
                 val timestamp = System.currentTimeMillis()
-                resultDao.insertResults(remoteMatches.map { matchDto -> matchDto.toResultEntity(timestamp) })
+                resultDao.insertResults(remoteMatches.map { matchDto ->
+                    matchDto
+                        .toResultEntity(timestamp)
+                })
                 if (remoteMatches.isEmpty())
                     emit(Resource.Success(emptyList()))
             } catch (e: HttpException) {

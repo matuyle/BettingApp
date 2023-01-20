@@ -9,10 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.bettinapp.R
 import com.example.bettinapp.presentation.Screen
 import com.example.bettinapp.presentation.common.components.MatchesList
 import com.example.bettinapp.presentation.common.components.TopButton
@@ -48,7 +50,7 @@ fun MatchResultsScreen(
     ) {
         Column(modifier = Modifier.matchParentSize()) {
             TopButton(
-                "Restart"
+                stringResource(R.string.match_result_screen_text_restart)
             ) {
                 viewModel.onEvent(MatchResultsEvent.OnTopButtonPressed)
                 true

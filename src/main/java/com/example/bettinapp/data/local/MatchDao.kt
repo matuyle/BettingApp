@@ -10,9 +10,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface MatchDao {
 
-//    @Query("SELECT * FROM matches_table ORDER BY timestamp DESC LIMIT 1")
-//    fun loadSingle(id: String): MatchEntity
-
     @Query("SELECT * FROM matches_table WHERE timestamp > :time AND timestamp = (SELECT MAX(timeStamp) FROM matches_table) ")
     fun getMatches(time: Long): Flow<List<MatchEntity>>
 

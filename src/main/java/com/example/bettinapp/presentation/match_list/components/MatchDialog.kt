@@ -9,8 +9,10 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import com.example.bettinapp.R
 import com.example.bettinapp.domain.model.Match
 
 
@@ -40,14 +42,13 @@ fun MatchDialog(
                 TextButton(onClick = {
                     // perform the confirm action
                     dialogOpen = false
-                    // Todo Need to move this logic to somewhere else
                     match.apply {
                         if (team1_prediction == null) team1_prediction = 0
                         if (team2_prediction == null) team2_prediction = 0
                     }
                     onConfirm.invoke(match)
                 }) {
-                    Text(text = "Confirm")
+                    Text(text = stringResource(R.string.button_text_confirm))
                 }
             },
             text = {

@@ -1,3 +1,22 @@
 <resources>
-    <string name="app_name">BettinApp</string>
+    <string name="app_name">BettingApp</string>
+
+    <!-- Dialog -->
+    <string name="button_text_confirm">Confirm</string>
+
+    <!-- Score item -->
+    <string name="score_text_remove">Remove</string>
+    <string name="score_text_add">Add</string>
+
+    <!-- Match list screen -->
+    <string name="button_text_get_results"><![CDATA[Get results >>]]></string>
+    <string name="match_list_screen_text_no_matches">Couldn\'t find matches</string>
+    <string name="match_list_screen_text_condition1">At least one prediction must be made</string>
+
+    <!-- Match result screen -->
+    <string name="match_result_screen_text_restart">Restart</string>
+    <string name="match_result_screen_text_no_results">Couldn\'t find results</string>
+
+    <!-- Errors -->
+    <string name="text_error_1">An unexpected error occurred</string>
 </resources>

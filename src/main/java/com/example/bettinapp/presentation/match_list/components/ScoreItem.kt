@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.bettinapp.R
@@ -35,7 +36,7 @@ fun ScoreItem(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_remove),
-                contentDescription = "Remove"
+                contentDescription = stringResource(R.string.score_text_remove)
             )
         }
         Spacer(modifier = Modifier.width(8.dp))
@@ -52,7 +53,7 @@ fun ScoreItem(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_add),
-                contentDescription = "Add",
+                contentDescription = stringResource(R.string.score_text_add),
             )
         }
     }

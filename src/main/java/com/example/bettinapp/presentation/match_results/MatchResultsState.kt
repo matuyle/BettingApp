@@ -6,4 +6,9 @@ data class MatchResultsState(
     val isLoading: Boolean = false,
     val matches: List<Match> = emptyList(),
     val error: String = "",
+    val state: String = ""
 )
+object ScreenState {
+    const val RESET = "reset"
+}
+

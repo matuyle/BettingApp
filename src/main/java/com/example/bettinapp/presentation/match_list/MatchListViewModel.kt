@@ -1,9 +1,11 @@
 package com.example.bettinapp.presentation.match_list
 
+import android.app.Application
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bettinapp.R
 import com.example.bettinapp.core.util.Constants
 import com.example.bettinapp.core.util.Resource
 import com.example.bettinapp.domain.repository.DataStoreRepository
@@ -21,7 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MatchListViewModel @Inject constructor(
     private val getMatchesUseCases: MatchesUseCases,
-    private val datastoreRepository: DataStoreRepository
+    private val datastoreRepository: DataStoreRepository,
+    private val application: Application
 ) : ViewModel() {
 
     private val _state = mutableStateOf(MatchListState())
@@ -38,13 +41,15 @@ class MatchListViewModel @Inject constructor(
                         if (result.data?.isNotEmpty() == true) {
                             _state.value = state.value.copy(
                                 matches = result.data,
-                                isLoading = false
+                                isLoading = false,
+                                error = ""
                             )
                         } else {
                             _state.value = MatchListState(
                                 matches = emptyList(),
                                 isLoading = false,
-                                error = result.message ?: "Can't find matches"
+                                error = result.message ?: application.applicationContext
+                                    .getString(R.string.match_list_screen_text_no_matches)
                             )
                         }
                     }
@@ -52,7 +57,8 @@ class MatchListViewModel @Inject constructor(
                         _state.value = MatchListState(
                             matches = emptyList(),
                             isLoading = false,
-                            error = result.message ?: "An unexpected error occured"
+                            error = result.message ?: application.applicationContext
+                                .getString(R.string.text_error_1)
                         )
                     }
                     is Resource.Loading -> {
@@ -99,7 +105,12 @@ class MatchListViewModel @Inject constructor(
                             _eventFlow.emit(UiEvent.MoveToResults)
                             return@launch
                         }
-                        _eventFlow.emit(UiEvent.ShowToast("At least one prediction must be made"))
+                        _eventFlow.emit(
+                            UiEvent.ShowToast(
+                                application.applicationContext
+                                    .getString(R.string.match_list_screen_text_condition1)
+                            )
+                        )
                     }
                 }
             }

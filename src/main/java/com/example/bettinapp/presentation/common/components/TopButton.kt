@@ -8,7 +8,9 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.bettinapp.R
 
 @Composable
 fun TopButton(
@@ -40,6 +42,6 @@ fun TopButton(
 @Composable
 fun TestingComposablePreview() {
     Box(modifier = Modifier.fillMaxSize()) {
-        TopButton("Get results >>")
+        TopButton(stringResource(R.string.button_text_get_results))
     }
 }
