@@ -11,9 +11,16 @@ to mock the api requests.Overall, our Demo Application is a great example of how
 and uses the latest technologies. 
 I hope you will enjoy using it as much as I enjoyed building it, and let me know when you see something fishy that needs to be fixed!
 
-![1](https://user-images.githubusercontent.com/7884134/213627695-f45ae547-72a0-4d32-9690-e31381681dbe.png=250x250)
-![2](https://user-images.githubusercontent.com/7884134/213627699-d1baeb27-d4a5-4ede-9b42-adfd8842bf2e.png=250x250)
-![3](https://user-images.githubusercontent.com/7884134/213627702-564e0257-40d2-408d-be6a-91ef929b800f.png=250x250)
-![4](https://user-images.githubusercontent.com/7884134/213627704-dcfa1942-12ac-4d08-bc4c-0614bc5558c9.png=250x250)
-![5]https://user-images.githubusercontent.com/7884134/213627706-0f4ceb4e-a043-46f4-893f-6e908b334e6b.png=250x250)
-![6]https://user-images.githubusercontent.com/7884134/213627707-42db4a2f-6e3e-412f-b80a-ad97f870ebe1.png=250x250)
+<p align="center">
+  <img width="300" height="630" src="https://user-images.githubusercontent.com/7884134/213631146-7f1c7314-83f6-4ef2-82f7-1eacbc6dab6b.png">
+  <img width="300" height="630" src="https://user-images.githubusercontent.com/7884134/213631155-70c12690-e288-4adf-89dd-5724f2cbb1b0.png">
+  <img width="300" height="630" src="https://user-images.githubusercontent.com/7884134/213631157-36a0336e-5c15-40c9-b309-4bf8eddf8fe2.png">
+</p>
+<p align="center">
+  <img width="300" height="630" src="https://user-images.githubusercontent.com/7884134/213631151-da1df11a-ad0d-47f7-85fc-c6391c219bf5.png">
+  <img width="300" height="630" src="https://user-images.githubusercontent.com/7884134/213631154-24ba1f32-ade0-4fc4-8300-5efc8b0b1595.png">
+  <img width="300" height="630" src="https://user-images.githubusercontent.com/7884134/213631160-23be5eb5-79ca-4c09-895f-2a11269215fd.png">
+</p>
+
+
+
