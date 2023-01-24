@@ -7,8 +7,7 @@ different components of the application, as well as for easy replacement of depe
 and flexible library from Android Jetpack that makes it easy to work with SQLite databases. I also used **Jetpack Compose**, which is the latest UI toolkit from Android, 
 to build the user interface. It provides a modern and reactive way to create UIs, making the code more expressive and easier to understand. For making API requests,
 i used **Retrofit**. It allows for easy creation of REST clients and provides a lot of flexibility when it comes to handling different types of responses. I used **mocky.io** 
-to mock the api requests.Overall, our Demo Application is a great example of how to build a modern and scalable Android application that follows best practices 
-and uses the latest technologies. 
+to mock the api requests. 
 I hope you will enjoy using it as much as I enjoyed building it, and let me know when you see something fishy that needs to be fixed!
 #
 <p align="center">
